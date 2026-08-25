@@ -15,11 +15,13 @@
     "check": "prettier --check ."
   },
   "dependencies": {
+    "@better-auth/drizzle-adapter": "^1.7.1",
     "@tailwindcss/vite": "^4.1.18",
     "@tanstack/react-devtools": "latest",
     "@tanstack/react-router": "latest",
     "@tanstack/react-router-devtools": "latest",
     "@tanstack/react-start": "latest",
+    "better-auth": "^1.7.1",
     "drizzle-orm": "^0.45.2",
     "jszip": "^3.10.1",
     "nanoid": "^6.0.1",
