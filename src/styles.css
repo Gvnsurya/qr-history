@@ -14,4 +14,225 @@ body,
 body {
   margin: 0;
 }
+/* =====================================================
+   ANIMATED COLOR BALLS BACKGROUND
+   ===================================================== */
 
+.animated-background {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.color-ball {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(45px);
+  opacity: 0.45;
+  animation: floatBall 14s ease-in-out infinite alternate;
+}
+
+.ball-blue {
+  width: 260px;
+  height: 260px;
+  background: #38bdf8;
+  top: -70px;
+  left: -70px;
+  animation-duration: 16s;
+}
+
+.ball-purple {
+  width: 300px;
+  height: 300px;
+  background: #a855f7;
+  top: 35%;
+  right: -100px;
+  animation-duration: 19s;
+  animation-delay: -5s;
+}
+
+.ball-pink {
+  width: 230px;
+  height: 230px;
+  background: #ec4899;
+  bottom: -60px;
+  left: 20%;
+  animation-duration: 17s;
+  animation-delay: -8s;
+}
+
+.ball-orange {
+  width: 200px;
+  height: 200px;
+  background: #fb923c;
+  top: 20%;
+  left: 45%;
+  animation-duration: 21s;
+  animation-delay: -3s;
+}
+
+@keyframes floatBall {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  25% {
+    transform: translate(80px, -40px) scale(1.08);
+  }
+
+  50% {
+    transform: translate(-40px, 80px) scale(0.95);
+  }
+
+  75% {
+    transform: translate(60px, 40px) scale(1.05);
+  }
+
+  100% {
+    transform: translate(-60px, -50px) scale(1);
+  }
+}
+
+/* Keep application content above the animated background */
+.app-content {
+  position: relative;
+  z-index: 1;
+}
+/* =========================================
+   ANIMATED BACKGROUND
+   ========================================= */
+
+.animated-background {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.color-ball {
+  position: absolute;
+  display: block;
+  width: 180px;
+  height: 180px;
+  border-radius: 9999px;
+  filter: blur(2px);
+  opacity: 0.35;
+  animation: floatBall 14s ease-in-out infinite alternate;
+}
+
+/* Blue ball */
+.ball-1 {
+  left: -60px;
+  top: 12%;
+  background: #38bdf8;
+  animation-duration: 13s;
+}
+
+/* Purple ball */
+.ball-2 {
+  right: -70px;
+  top: 20%;
+  width: 220px;
+  height: 220px;
+  background: #a78bfa;
+  animation-duration: 16s;
+  animation-delay: -3s;
+}
+
+/* Pink ball */
+.ball-3 {
+  left: 25%;
+  bottom: -80px;
+  width: 210px;
+  height: 210px;
+  background: #f472b6;
+  animation-duration: 15s;
+  animation-delay: -5s;
+}
+
+/* Orange ball */
+.ball-4 {
+  right: 20%;
+  top: -90px;
+  width: 190px;
+  height: 190px;
+  background: #fb923c;
+  animation-duration: 18s;
+  animation-delay: -2s;
+}
+
+/* Green ball */
+.ball-5 {
+  left: 45%;
+  top: 45%;
+  width: 140px;
+  height: 140px;
+  background: #34d399;
+  opacity: 0.22;
+  animation-duration: 12s;
+  animation-delay: -7s;
+}
+
+/* Yellow ball */
+.ball-6 {
+  right: 5%;
+  bottom: 5%;
+  width: 160px;
+  height: 160px;
+  background: #facc15;
+  opacity: 0.25;
+  animation-duration: 17s;
+  animation-delay: -4s;
+}
+
+@keyframes floatBall {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  25% {
+    transform: translate(80px, -60px) scale(1.08);
+  }
+
+  50% {
+    transform: translate(-40px, 80px) scale(0.92);
+  }
+
+  75% {
+    transform: translate(100px, 40px) scale(1.05);
+  }
+
+  100% {
+    transform: translate(-60px, -70px) scale(1);
+  }
+}
+
+/* Keep the actual application above the balls */
+.app-content {
+  position: relative;
+  z-index: 1;
+}
+
+/* Make the page slightly transparent so the animation can be seen */
+.app-card {
+  position: relative;
+  z-index: 1;
+}
+
+/* Mobile adjustment */
+@media (max-width: 640px) {
+  .color-ball {
+    width: 120px;
+    height: 120px;
+  }
+
+  .ball-2,
+  .ball-3,
+  .ball-4 {
+    width: 150px;
+    height: 150px;
+  }
+}

@@ -217,7 +217,25 @@ function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-gray-100 p-4 sm:p-8">
+  <main className="relative min-h-screen overflow-hidden bg-slate-100 p-8">
+   <div className="animated-background" aria-hidden="true">
+  <span className="color-ball ball-1" />
+  <span className="color-ball ball-2" />
+  <span className="color-ball ball-3" />
+  <span className="color-ball ball-4" />
+  <span className="color-ball ball-5" />
+  <span className="color-ball ball-6" />
+</div> 
+    {/* Animated background */}
+    <div className="animated-background">
+      <div className="color-ball ball-blue" />
+      <div className="color-ball ball-purple" />
+      <div className="color-ball ball-pink" />
+      <div className="color-ball ball-orange" />
+    </div>
+
+    {/* Application content */}
+    
       <div className="mx-auto max-w-5xl">
         <h1 className="mb-2 text-3xl font-bold sm:text-4xl">
           QR Generator
@@ -385,6 +403,6 @@ function Home() {
           )}
         </section>
       </div>
-    </main>
+  </main>
   );
 }
