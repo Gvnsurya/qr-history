@@ -14,14 +14,25 @@ function LoginPage() {
   const [name, setName] = useState("");
   const [isSignup, setIsSignup] = useState(false);
   const [message, setMessage] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [showWelcome, setShowWelcome] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  // Switch between Login and Signup
+  const switchMode = () => {
+    setIsSignup(!isSignup);
+
+    // Clear all previous form data
+    setEmail("");
+    setPassword("");
+    setName("");
+    setMessage("");
+    setLoading(false);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    setIsLoading(true);
     setMessage("");
+    setLoading(true);
 
     try {
       if (isSignup) {
@@ -34,12 +45,17 @@ function LoginPage() {
         if (error) {
           setMessage(error.message || "Signup failed");
         } else {
-          setMessage("Account created successfully! 🎉");
+          setMessage("Account created successfully!");
 
+          // Clear signup form
+          setEmail("");
+          setPassword("");
+          setName("");
+
+          // Redirect to QR Generator
           setTimeout(() => {
-            setIsSignup(false);
-            setMessage("");
-          }, 1500);
+            navigate({ to: "/" });
+          }, 800);
         }
       } else {
         const { error } = await authClient.signIn.email({
@@ -50,91 +66,181 @@ function LoginPage() {
         if (error) {
           setMessage(error.message || "Login failed");
         } else {
-          setShowWelcome(true);
+          setMessage("Login successful! 👋");
 
+          // Clear sensitive data
+          setPassword("");
+
+          // Redirect to QR Generator
           setTimeout(() => {
             navigate({ to: "/" });
-          }, 1800);
+          }, 800);
         }
       }
     } catch (error) {
-      setMessage("Something went wrong. Please try again.");
+      console.error(error);
+
+      setMessage(
+        isSignup
+          ? "Something went wrong while creating your account."
+          : "Something went wrong while logging in."
+      );
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
-  if (showWelcome) {
-    return (
-      <div style={welcomePageStyle}>
-        <div style={welcomeGlow1}></div>
-        <div style={welcomeGlow2}></div>
-
-        <div style={welcomeCardStyle}>
-          <div style={waveStyle}>👋</div>
-
-          <h1
-            style={{
-              fontSize: "38px",
-              marginBottom: "10px",
-              color: "#ffffff",
-            }}
-          >
-            Hi, Welcome!
-          </h1>
-
-          <p
-            style={{
-              fontSize: "18px",
-              color: "#dbeafe",
-              marginBottom: "25px",
-            }}
-          >
-            Great to see you again.
-          </p>
-
-          <div style={loadingBarContainer}>
-            <div style={loadingBar}></div>
-          </div>
-
-          <p
-            style={{
-              color: "#bfdbfe",
-              marginTop: "18px",
-              fontSize: "14px",
-            }}
-          >
-            Taking you to your QR Generator...
-          </p>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div style={pageStyle}>
+    <div
+      style={{
+        minHeight: "100vh",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        position: "relative",
+        overflow: "hidden",
+        background:
+          "linear-gradient(135deg, #312e81 0%, #7c3aed 50%, #db2777 100%)",
+        padding: "20px",
+        boxSizing: "border-box",
+      }}
+    >
       {/* Background decorative circles */}
-      <div style={circle1}></div>
-      <div style={circle2}></div>
-      <div style={circle3}></div>
-      <div style={circle4}></div>
+      <div
+        style={{
+          position: "absolute",
+          width: "420px",
+          height: "420px",
+          borderRadius: "50%",
+          background: "rgba(255,255,255,0.10)",
+          top: "-160px",
+          left: "-120px",
+        }}
+      />
 
-      {/* Floating QR decorations */}
-      <div style={floatingEmoji1}>✨</div>
-      <div style={floatingEmoji2}>🎨</div>
-      <div style={floatingEmoji3}>🚀</div>
+      <div
+        style={{
+          position: "absolute",
+          width: "260px",
+          height: "260px",
+          borderRadius: "50%",
+          background: "rgba(79,70,229,0.45)",
+          top: "160px",
+          right: "10%",
+        }}
+      />
 
-      <div style={cardStyle}>
-        {/* Top icon */}
-        <div style={iconContainer}>
-          <div style={qrIcon}>▦</div>
+      <div
+        style={{
+          position: "absolute",
+          width: "320px",
+          height: "320px",
+          borderRadius: "50%",
+          background: "rgba(236,72,153,0.25)",
+          bottom: "-150px",
+          right: "-50px",
+        }}
+      />
+
+      <div
+        style={{
+          position: "absolute",
+          width: "130px",
+          height: "130px",
+          borderRadius: "50%",
+          background: "rgba(255,255,255,0.18)",
+          bottom: "80px",
+          left: "12%",
+        }}
+      />
+
+      {/* Decorative emojis */}
+      <div
+        style={{
+          position: "absolute",
+          top: "25%",
+          left: "19%",
+          fontSize: "45px",
+        }}
+      >
+        ✨
+      </div>
+
+      <div
+        style={{
+          position: "absolute",
+          top: "38%",
+          right: "16%",
+          fontSize: "42px",
+        }}
+      >
+        🎨
+      </div>
+
+      <div
+        style={{
+          position: "absolute",
+          bottom: "14%",
+          right: "19%",
+          fontSize: "48px",
+        }}
+      >
+        🚀
+      </div>
+
+      {/* Login Card */}
+      <div
+        style={{
+          width: "100%",
+          maxWidth: "440px",
+          padding: "42px",
+          background: "rgba(255,255,255,0.94)",
+          borderRadius: "28px",
+          boxShadow: "0 25px 60px rgba(0,0,0,0.28)",
+          position: "relative",
+          zIndex: 2,
+          boxSizing: "border-box",
+        }}
+      >
+        {/* QR Icon */}
+        <div
+          style={{
+            width: "82px",
+            height: "82px",
+            margin: "0 auto 25px",
+            borderRadius: "24px",
+            background:
+              "linear-gradient(135deg, #4f46e5 0%, #9333ea 50%, #ec4899 100%)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "white",
+            fontSize: "40px",
+            boxShadow: "0 12px 25px rgba(124,58,237,0.35)",
+          }}
+        >
+          ▦
         </div>
 
-        <h1 style={titleStyle}>
-          {isSignup ? "Create Account" : "Welcome Back"}
+        <h1
+          style={{
+            textAlign: "center",
+            margin: "0 0 12px",
+            color: "#1f2937",
+            fontSize: "34px",
+          }}
+        >
+          {isSignup ? "Create Account" : "Welcome Back 👋"}
         </h1>
 
-        <p style={subtitleStyle}>
+        <p
+          style={{
+            textAlign: "center",
+            color: "#64748b",
+            marginBottom: "30px",
+            lineHeight: "1.6",
+          }}
+        >
           {isSignup
             ? "Create your account and save all your QR codes securely."
             : "Login to access your personal QR code history."}
@@ -142,7 +248,7 @@ function LoginPage() {
 
         <form onSubmit={handleSubmit}>
           {isSignup && (
-            <div>
+            <>
               <label style={labelStyle}>Your Name</label>
 
               <input
@@ -153,45 +259,53 @@ function LoginPage() {
                 required
                 style={inputStyle}
               />
-            </div>
+            </>
           )}
 
-          <div>
-            <label style={labelStyle}>Email Address</label>
+          <label style={labelStyle}>Email Address</label>
 
-            <input
-              type="email"
-              placeholder="you@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              style={inputStyle}
-            />
-          </div>
+          <input
+            type="email"
+            placeholder="Enter your email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            autoComplete="email"
+            style={inputStyle}
+          />
 
-          <div>
-            <label style={labelStyle}>Password</label>
+          <label style={labelStyle}>Password</label>
 
-            <input
-              type="password"
-              placeholder="Enter your password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              style={inputStyle}
-            />
-          </div>
+          <input
+            type="password"
+            placeholder="Enter your password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            autoComplete={isSignup ? "new-password" : "current-password"}
+            style={inputStyle}
+          />
 
           <button
             type="submit"
-            disabled={isLoading}
+            disabled={loading}
             style={{
-              ...buttonStyle,
-              opacity: isLoading ? 0.7 : 1,
-              cursor: isLoading ? "not-allowed" : "pointer",
+              width: "100%",
+              padding: "16px",
+              border: "none",
+              borderRadius: "14px",
+              background:
+                "linear-gradient(90deg, #4f46e5 0%, #7c3aed 50%, #db2777 100%)",
+              color: "white",
+              fontSize: "17px",
+              fontWeight: "bold",
+              cursor: loading ? "not-allowed" : "pointer",
+              marginTop: "8px",
+              boxShadow: "0 10px 22px rgba(124,58,237,0.28)",
+              opacity: loading ? 0.7 : 1,
             }}
           >
-            {isLoading
+            {loading
               ? "Please wait..."
               : isSignup
                 ? "Create My Account 🚀"
@@ -199,40 +313,81 @@ function LoginPage() {
           </button>
         </form>
 
+        {/* Message */}
         {message && (
-          <div
+          <p
             style={{
-              marginTop: "18px",
-              padding: "12px",
-              borderRadius: "12px",
               textAlign: "center",
-              background: message.includes("success")
-                ? "#dcfce7"
-                : "#fee2e2",
-              color: message.includes("success")
-                ? "#166534"
-                : "#b91c1c",
-              fontSize: "14px",
+              marginTop: "18px",
+              color: message.toLowerCase().includes("successful")
+                ? "#16a34a"
+                : "#dc2626",
+              fontWeight: "500",
             }}
           >
             {message}
-          </div>
+          </p>
         )}
 
-        <div style={divider}>
-          <div style={dividerLine}></div>
-          <span style={{ color: "#94a3b8", fontSize: "13px" }}>OR</span>
-          <div style={dividerLine}></div>
+        {/* Divider */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "12px",
+            margin: "28px 0",
+          }}
+        >
+          <div
+            style={{
+              height: "1px",
+              background: "#e2e8f0",
+              flex: 1,
+            }}
+          />
+
+          <span
+            style={{
+              color: "#94a3b8",
+              fontSize: "14px",
+            }}
+          >
+            OR
+          </span>
+
+          <div
+            style={{
+              height: "1px",
+              background: "#e2e8f0",
+              flex: 1,
+            }}
+          />
         </div>
 
-        <p style={switchTextStyle}>
-          {isSignup ? "Already have an account?" : "New to QR Generator?"}{" "}
+        {/* Switch Login / Signup */}
+        <p
+          style={{
+            textAlign: "center",
+            color: "#64748b",
+            margin: 0,
+          }}
+        >
+          {isSignup
+            ? "Already have an account?"
+            : "New to QR Generator?"}{" "}
+
           <button
-            onClick={() => {
-              setIsSignup(!isSignup);
-              setMessage("");
+            type="button"
+            onClick={switchMode}
+            style={{
+              border: "none",
+              background: "none",
+              color: "#5b21b6",
+              cursor: "pointer",
+              fontWeight: "bold",
+              fontSize: "15px",
+              padding: 0,
             }}
-            style={switchButtonStyle}
           >
             {isSignup ? "Login here" : "Create an account"}
           </button>
@@ -242,263 +397,22 @@ function LoginPage() {
   );
 }
 
-/* =========================
-   PAGE STYLES
-========================= */
-
-const pageStyle = {
-  minHeight: "100vh",
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  position: "relative" as const,
-  overflow: "hidden",
-  padding: "30px",
-  background:
-    "linear-gradient(135deg, #312e81 0%, #4f46e5 35%, #7c3aed 70%, #ec4899 100%)",
-};
-
-const cardStyle = {
-  width: "420px",
-  maxWidth: "100%",
-  padding: "38px",
-  borderRadius: "28px",
-  background: "rgba(255,255,255,0.96)",
-  boxShadow: "0 25px 70px rgba(0,0,0,0.30)",
-  position: "relative" as const,
-  zIndex: 5,
-  backdropFilter: "blur(20px)",
-};
-
-const iconContainer = {
-  width: "76px",
-  height: "76px",
-  borderRadius: "22px",
-  margin: "0 auto 20px",
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  background: "linear-gradient(135deg, #4f46e5, #8b5cf6, #ec4899)",
-  boxShadow: "0 12px 30px rgba(99,102,241,0.4)",
-};
-
-const qrIcon = {
-  fontSize: "42px",
-  color: "white",
-  fontWeight: "bold",
-};
-
-const titleStyle = {
-  textAlign: "center" as const,
-  fontSize: "30px",
-  color: "#111827",
-  margin: "0 0 10px",
-};
-
-const subtitleStyle = {
-  textAlign: "center" as const,
-  color: "#64748b",
-  fontSize: "15px",
-  lineHeight: "1.6",
-  marginBottom: "28px",
-};
-
 const labelStyle = {
   display: "block",
-  fontSize: "14px",
+  marginBottom: "8px",
+  color: "#475569",
   fontWeight: "600",
-  color: "#374151",
-  marginBottom: "7px",
+  fontSize: "14px",
 };
 
 const inputStyle = {
   width: "100%",
-  padding: "14px 16px",
-  marginBottom: "18px",
-  border: "1px solid #dbe1ea",
+  padding: "15px",
+  marginBottom: "20px",
+  border: "1px solid #cbd5e1",
   borderRadius: "14px",
-  fontSize: "15px",
   boxSizing: "border-box" as const,
+  fontSize: "16px",
   outline: "none",
   background: "#f8fafc",
-};
-
-const buttonStyle = {
-  width: "100%",
-  padding: "15px",
-  border: "none",
-  borderRadius: "14px",
-  background:
-    "linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #db2777 100%)",
-  color: "white",
-  fontSize: "16px",
-  fontWeight: "600",
-  boxShadow: "0 10px 25px rgba(79,70,229,0.35)",
-  transition: "all 0.3s ease",
-};
-
-const divider = {
-  display: "flex",
-  alignItems: "center",
-  gap: "12px",
-  margin: "25px 0 18px",
-};
-
-const dividerLine = {
-  flex: 1,
-  height: "1px",
-  background: "#e2e8f0",
-};
-
-const switchTextStyle = {
-  textAlign: "center" as const,
-  color: "#64748b",
-  fontSize: "14px",
-};
-
-const switchButtonStyle = {
-  border: "none",
-  background: "none",
-  color: "#6d28d9",
-  cursor: "pointer",
-  fontWeight: "700",
-  fontSize: "14px",
-};
-
-/* =========================
-   BACKGROUND DECORATIONS
-========================= */
-
-const circle1 = {
-  position: "absolute" as const,
-  width: "380px",
-  height: "380px",
-  borderRadius: "50%",
-  background: "rgba(255,255,255,0.12)",
-  top: "-140px",
-  left: "-100px",
-};
-
-const circle2 = {
-  position: "absolute" as const,
-  width: "300px",
-  height: "300px",
-  borderRadius: "50%",
-  background: "rgba(236,72,153,0.25)",
-  bottom: "-120px",
-  right: "-80px",
-};
-
-const circle3 = {
-  position: "absolute" as const,
-  width: "180px",
-  height: "180px",
-  borderRadius: "50%",
-  background: "rgba(59,130,246,0.25)",
-  top: "20%",
-  right: "10%",
-};
-
-const circle4 = {
-  position: "absolute" as const,
-  width: "120px",
-  height: "120px",
-  borderRadius: "50%",
-  background: "rgba(250,204,21,0.25)",
-  bottom: "12%",
-  left: "12%",
-};
-
-const floatingEmoji1 = {
-  position: "absolute" as const,
-  top: "15%",
-  left: "18%",
-  fontSize: "40px",
-  zIndex: 2,
-};
-
-const floatingEmoji2 = {
-  position: "absolute" as const,
-  top: "30%",
-  right: "18%",
-  fontSize: "38px",
-  zIndex: 2,
-};
-
-const floatingEmoji3 = {
-  position: "absolute" as const,
-  bottom: "16%",
-  right: "20%",
-  fontSize: "42px",
-  zIndex: 2,
-};
-
-/* =========================
-   WELCOME SCREEN
-========================= */
-
-const welcomePageStyle = {
-  minHeight: "100vh",
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  position: "relative" as const,
-  overflow: "hidden",
-  background:
-    "linear-gradient(135deg, #0f172a 0%, #312e81 45%, #7c3aed 100%)",
-};
-
-const welcomeCardStyle = {
-  position: "relative" as const,
-  zIndex: 5,
-  textAlign: "center" as const,
-  padding: "55px 70px",
-  borderRadius: "35px",
-  background: "rgba(255,255,255,0.10)",
-  border: "1px solid rgba(255,255,255,0.18)",
-  backdropFilter: "blur(20px)",
-  boxShadow: "0 25px 80px rgba(0,0,0,0.35)",
-};
-
-const waveStyle = {
-  fontSize: "100px",
-  marginBottom: "15px",
-  animation: "wave 1s infinite",
-};
-
-const welcomeGlow1 = {
-  position: "absolute" as const,
-  width: "400px",
-  height: "400px",
-  borderRadius: "50%",
-  background: "rgba(236,72,153,0.25)",
-  filter: "blur(80px)",
-  top: "-100px",
-  left: "-100px",
-};
-
-const welcomeGlow2 = {
-  position: "absolute" as const,
-  width: "400px",
-  height: "400px",
-  borderRadius: "50%",
-  background: "rgba(59,130,246,0.25)",
-  filter: "blur(80px)",
-  bottom: "-100px",
-  right: "-100px",
-};
-
-const loadingBarContainer = {
-  width: "100%",
-  height: "7px",
-  background: "rgba(255,255,255,0.2)",
-  borderRadius: "20px",
-  overflow: "hidden",
-};
-
-const loadingBar = {
-  width: "100%",
-  height: "100%",
-  background: "linear-gradient(90deg, #60a5fa, #c084fc, #f472b6)",
-  borderRadius: "20px",
 };
