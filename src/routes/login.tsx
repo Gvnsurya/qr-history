@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { authClient } from "../lib/auth-client";
 
@@ -7,39 +7,61 @@ export const Route = createFileRoute("/login")({
 });
 
 function LoginPage() {
+  const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [isSignup, setIsSignup] = useState(false);
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     setMessage("Please wait...");
+    setLoading(true);
 
-    if (isSignup) {
-      const { error } = await authClient.signUp.email({
-        email,
-        password,
-        name,
-      });
+    try {
+      if (isSignup) {
+        const { error } = await authClient.signUp.email({
+          email,
+          password,
+          name,
+        });
 
-      if (error) {
-        setMessage(error.message || "Signup failed");
+        if (error) {
+          setMessage(error.message || "Signup failed");
+        } else {
+          setMessage("Account created successfully! Please login.");
+
+          setIsSignup(false);
+          setPassword("");
+        }
       } else {
-        setMessage("Account created successfully!");
-      }
-    } else {
-      const { error } = await authClient.signIn.email({
-        email,
-        password,
-      });
+        const { error } = await authClient.signIn.email({
+          email,
+          password,
+        });
 
-      if (error) {
-        setMessage(error.message || "Login failed");
-      } else {
-        setMessage("Login successful!");
+        if (error) {
+          setMessage(error.message || "Login failed");
+        } else {
+          setMessage("Login successful!");
+
+          setTimeout(() => {
+            navigate({ to: "/" });
+          }, 500);
+        }
       }
+    } catch (error) {
+      console.error(error);
+
+      setMessage(
+        isSignup ? "Signup failed. Please try again." : "Login failed. Please try again.",
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -104,6 +126,7 @@ function LoginPage() {
 
           <button
             type="submit"
+            disabled={loading}
             style={{
               width: "100%",
               padding: "13px",
@@ -112,10 +135,15 @@ function LoginPage() {
               background: "#111827",
               color: "white",
               fontSize: "16px",
-              cursor: "pointer",
+              cursor: loading ? "not-allowed" : "pointer",
+              opacity: loading ? 0.7 : 1,
             }}
           >
-            {isSignup ? "Sign Up" : "Login"}
+            {loading
+              ? "Please wait..."
+              : isSignup
+                ? "Sign Up"
+                : "Login"}
           </button>
         </form>
 
@@ -128,9 +156,11 @@ function LoginPage() {
         <p style={{ textAlign: "center", marginTop: "20px" }}>
           {isSignup ? "Already have an account?" : "Don't have an account?"}{" "}
           <button
+            type="button"
             onClick={() => {
               setIsSignup(!isSignup);
               setMessage("");
+              setPassword("");
             }}
             style={{
               border: "none",

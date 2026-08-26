@@ -1,7 +1,9 @@
-import { pgTable, text, timestamp } from "drizzle-orm/pg-core"
+import { pgTable, text, timestamp } from "drizzle-orm/pg-core";
 
 export const qrCodes = pgTable("qr_codes", {
   id: text("id").primaryKey(),
+
+  userId: text("user_id").notNull(),
 
   url: text("url").notNull(),
 
@@ -12,4 +14,4 @@ export const qrCodes = pgTable("qr_codes", {
   })
     .defaultNow()
     .notNull(),
-})
+});
